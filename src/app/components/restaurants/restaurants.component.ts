@@ -54,38 +54,53 @@ interface Restaurant {
     </div>
   </div>
 
-  <!-- Restaurants Grid -->
-  <div class="restaurants-grid">
-<div class="restaurant-card cursor-pointer" 
-     *ngFor="let restaurant of filteredRestaurants"
-     (click)="goToMenu(restaurant.id)">
-      <div class="card-image">
-        <img [src]="restaurant.image" [alt]="restaurant.name">
-        <div class="offer-badge" *ngIf="restaurant.hasOffer">
-          {{ restaurant.offerText }}
+ <!-- Restaurants Grid -->
+<div class="min-h-screen bg-cover bg-center pt-20" style="background-image: url('path-to-your-background-image.jpg');">
+  <div class="max-w-6xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4 text-white">Restaurants</h1>
+
+    <!-- Grid Layout for Restaurants with Transparent Background -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div 
+        class="restaurant-card cursor-pointer overflow-hidden rounded-lg"
+        *ngFor="let restaurant of filteredRestaurants"
+        (click)="goToMenu(restaurant.id)"
+      >
+        <div class="card-image relative">
+          <img 
+            [src]="restaurant.image" 
+            [alt]="restaurant.name" 
+            class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+          >
+          <div 
+            class="offer-badge absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs"
+            *ngIf="restaurant.hasOffer"
+          >
+            {{ restaurant.offerText }}
+          </div>
+        </div>
+        
+        <div class="p-4">
+          <h3 class="restaurant-name font-bold text-lg mb-1 text-white">{{ restaurant.name }}</h3>
+          <div class="rating-time flex items-center text-sm text-white">
+            <span class="star-circle flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full mr-2">
+              ★
+            </span>
+            <span class="rating">{{ restaurant.rating }}</span>
+            <span class="dot mx-2">•</span>
+            <span class="delivery-time">{{ restaurant.deliveryTime }}</span>
+          </div>
+          <div class="cuisines text-sm text-gray-200 mt-2">{{ restaurant.cuisines.join(', ') }}</div>
+          <div class="location text-sm text-gray-200">{{ restaurant.location }}</div>
         </div>
       </div>
-      
-      <div class="card-content">
-        <h3 class="restaurant-name">{{ restaurant.name }}</h3>
-        <div class="rating-time">
-          <span class="star-circle">
-            <span class="star">★</span> 
-          </span>
-          <span class="rating">{{ restaurant.rating }}</span>
-          <span class="dot">•</span>
-          <span class="delivery-time">{{ restaurant.deliveryTime }}</span> 
-        </div>
-        <div class="cuisines">{{ restaurant.cuisines.join(', ') }}</div>
-        <div class="location">{{ restaurant.location }}</div>
-      </div>
+    </div>
+
+    <div class="line-container mt-8">
+      <hr class="custom-hr border-t border-gray-300">
     </div>
   </div>
 </div>
-
-<div class="line-container">
-    <hr class="custom-hr">
-  </div>
 
 
   `,
