@@ -22,47 +22,46 @@ interface Restaurant {
   <div class="container">
   <h1 class="heading">Restaurants with online food delivery in Mumbai</h1>
 
-  <!-- Filters Section -->
-  <div class="filters-container">
-    <div class="filters-wrapper">
-      <button class="filter-btn">
-        <span class="filter-icon">⚡</span>
-        Filter
-      </button>
+ <!-- Filters Section -->
+<div class="filters-container bg-transparent mb-2">
+  <div class="filters-wrapper flex items-center gap-2">
+    <button class="filter-btn bg-green-500 text-white px-3 py-1 rounded shadow hover:shadow-md transition-shadow">
+      <span class="filter-icon">⚡</span>
+      Filter
+    </button>
 
-      <div class="filter-chip sort-by" (click)="toggleSortOptions()">
-        <span>{{ selectedSort }}</span>
-        <span class="arrow-down">▼</span>
-        
-        <div class="sort-options" *ngIf="showSortOptions">
-          <div class="sort-option" 
-               *ngFor="let option of sortOptions"
-               (click)="selectSortOption(option)">
-            {{ option }}
-          </div>
-        </div>
-      </div>
+    <div class="filter-chip sort-by text-white cursor-pointer" (click)="toggleSortOptions()">
+      <span>{{ selectedSort }}</span>
+      <span class="arrow-down">▼</span>
 
-      <div class="filter-chips">
-        <div class="filter-chip" 
-             *ngFor="let filter of filters"
-             [class.active]="filter.isActive"
-             (click)="toggleFilter(filter)">
-          {{ filter.label }}
+      <div class="sort-options bg-gray-800 text-white rounded shadow mt-2" *ngIf="showSortOptions">
+        <div class="sort-option px-3 py-1 hover:bg-gray-700" 
+             *ngFor="let option of sortOptions"
+             (click)="selectSortOption(option)">
+          {{ option }}
         </div>
       </div>
     </div>
+
+    <div class="filter-chips flex gap-2">
+      <div class="filter-chip text-white cursor-pointer px-3 py-1 rounded"
+           *ngFor="let filter of filters"
+           [class.active]="filter.isActive"
+           (click)="toggleFilter(filter)">
+        {{ filter.label }}
+      </div>
+    </div>
   </div>
+</div>
 
- <!-- Restaurants Grid -->
-<div class="min-h-screen bg-cover bg-center pt-20" style="background-image: url('path-to-your-background-image.jpg');">
-  <div class="max-w-6xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4 text-white">Restaurants</h1>
+<!-- Restaurants Grid -->
+<div class="min-h-screen bg-cover bg-center pt-2" style="background-image: url('path-to-your-background-image.jpg');">
 
-    <!-- Grid Layout for Restaurants with Transparent Background -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- Grid Layout for Restaurants with More Spacing -->
+   <!-- Change to 4 columns in large screens -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
       <div 
-        class="restaurant-card cursor-pointer overflow-hidden rounded-lg"
+        class="restaurant-card cursor-pointer overflow-hidden rounded-xl"
         *ngFor="let restaurant of filteredRestaurants"
         (click)="goToMenu(restaurant.id)"
       >
@@ -70,7 +69,7 @@ interface Restaurant {
           <img 
             [src]="restaurant.image" 
             [alt]="restaurant.name" 
-            class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+            class="w-full h-90 object-cover transition-transform duration-300 hover:scale-105"
           >
           <div 
             class="offer-badge absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs"
@@ -80,7 +79,7 @@ interface Restaurant {
           </div>
         </div>
         
-        <div class="p-4">
+        <div class="p-3">
           <h3 class="restaurant-name font-bold text-lg mb-1 text-white">{{ restaurant.name }}</h3>
           <div class="rating-time flex items-center text-sm text-white">
             <span class="star-circle flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full mr-2">
@@ -90,226 +89,261 @@ interface Restaurant {
             <span class="dot mx-2">•</span>
             <span class="delivery-time">{{ restaurant.deliveryTime }}</span>
           </div>
-          <div class="cuisines text-sm text-gray-200 mt-2">{{ restaurant.cuisines.join(', ') }}</div>
-          <div class="location text-sm text-gray-200">{{ restaurant.location }}</div>
+          <div class="cuisines text-sm text-gray-300 mt-2">{{ restaurant.cuisines.join(', ') }}</div>
+          <div class="location text-sm text-gray-300">{{ restaurant.location }}</div>
         </div>
       </div>
     </div>
 
-    <div class="line-container mt-8">
+    <div class="line-container mt-4">
       <hr class="custom-hr border-t border-gray-300">
     </div>
-  </div>
 </div>
-
 
   `,
   styles: [`
-  .cursor-pointer {
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+/* Base container and layout */
+.container {
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.cursor-pointer:hover {
+.heading {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000; /* Changed to black */
+  margin-bottom: 20px;
+}
+
+/* Grid Layout */
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 20px 0;
+}
+
+/* Restaurant Card */
+.restaurant-card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border-radius: 16px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.restaurant-card:hover {
   transform: scale(0.98);
 }
-.line-container {
-  display: flex;
-  justify-content: flex-start; 
-  margin-top: 16px; 
+
+/* Image Container */
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 16px;
 }
 
-.custom-hr {
-  border: none; 
-  height: 1px; 
-  background-color: #e6e6e6; 
-  width: 90%; 
-  margin-left: 5%; 
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+.card-image:hover img {
+  transform: scale(1.05);
+}
 
-    .heading {
-      font-size: 24px;
-      font-weight: 600;
-      color: #3d4152;
-      margin-bottom: 20px;
-    }
+/* Offer Badge */
+.offer-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(rgba(27, 30, 36, 0) 0%, rgb(27, 30, 36) 84.21%);
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
 
-    .filters-container {
-      padding: 16px 0;
-      border-bottom: 1px solid #e9e9eb;
-      background: #fff;
-      margin-bottom: 20px;
-    }
+/* Card Content */
+.card-content {
+  padding: 16px;
+  color: #000; /* Changed to black */
+}
 
-    .filters-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 0 20px;
-    }
-
-    .filter-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border: 1px solid #e9e9eb;
-      border-radius: 18px;
-      background: transparent;
-      font-size: 14px;
-      color: #3d4152;
-      cursor: pointer;
-    }
-
-    .filter-chips {
-      display: flex;
-      gap: 12px;
-      flex-wrap: nowrap;
-    }
-
-    .filter-chip {
-      padding: 8px 12px;
-      border: 1px solid #e9e9eb;
-      border-radius: 18px;
-      font-size: 14px;
-      color: #3d4152;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.3s ease;
-    }
-
-    .filter-chip:hover {
-      background: #f2f2f2;
-    }
-
-    .filter-chip.active {
-      background: #3d4152;
-      color: #fff;
-      border-color: #3d4152;
-    }
-
-    .restaurants-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 32px;
-      padding: 20px 0;
-    }
-
-    .restaurant-card {
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .restaurant-card:hover {
-      transform: scale(0.98);
-    }
-
-    .card-image {
-      position: relative;
-      aspect-ratio: 16/9;
-      overflow: hidden;
-      border-radius: 16px;
-    }
-
-    .card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .offer-badge {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(rgba(27, 30, 36, 0) 0%, rgb(27, 30, 36) 84.21%);
-      color: white;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .card-content {
-      padding: 12px 0;
-    }
-
-    .restaurant-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #3d4152;
-      margin-bottom: 8px;
-    }
+.restaurant-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000; /* Changed to black */
+  margin-bottom: 8px;
+}
 
 .rating-time {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
-  
+  margin-bottom: 8px;
 }
+
 .star-circle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-color: #28a745;
 }
+
 .star {
-  color: #fff; 
-  font-size: 12px;
+  color: #fff;
+  font-size: 14px;
 }
 
 .rating {
-  color: #3d4152;
-  font-weight: 600; 
+  color: #000; /* Changed to black */
+  font-weight: 600;
 }
 
 .dot {
-  color: #93959f;
+  color: #000; /* Changed to black */
 }
 
 .delivery-time {
-  color: #000; 
-  font-weight: bold;
+  color: #000; /* Changed to black */
+  font-weight: 500;
 }
 
+.cuisines {
+  color: #333; /* Dark gray for better readability */
+  font-size: 14px;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
 
-    .cuisines {
-      color: #93959f;
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
+.location {
+  color: #333; /* Dark gray for better readability */
+  font-size: 14px;
+}
 
-    .location {
-      color: #93959f;
-      font-size: 14px;
-    }
+/* Filter Section */
+.filters-container {
+  padding: 1rem 0;
+  margin-bottom: 20px;
+  background: transparent;
+}
 
-    @media (max-width: 768px) {
-      .filters-wrapper {
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      
-      .filters-wrapper::-webkit-scrollbar {
-        display: none;
-      }
+.filters-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
 
-      .restaurants-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-      }
-    }
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.2); /* Semi-transparent black border */
+  border-radius: 18px;
+  background: transparent;
+  font-size: 14px;
+  color: #000; /* Changed to black */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(0, 0, 0, 0.05); /* Very light black background on hover */
+}
+
+.filter-chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.filter-chip {
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.2); /* Semi-transparent black border */
+  border-radius: 18px;
+  font-size: 14px;
+  color: #000; /* Changed to black */
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.filter-chip:hover {
+  background: rgba(0, 0, 0, 0.05); /* Very light black background on hover */
+}
+
+.filter-chip.active {
+  background: #000; /* Black background when active */
+  color: #fff; /* White text when active */
+  border-color: transparent;
+}
+
+/* Line Separator */
+.line-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.custom-hr {
+  border: none;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent black */
+  width: 90%;
+}
+
+/* Responsive Design */
+@media (max-width: 1600px) {
+  .restaurants-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .restaurants-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .restaurants-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .restaurants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-image {
+    height: 200px;
+  }
+
+  .filters-wrapper {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .filters-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+}
   `]
 })
 export class RestaurantsComponent {
@@ -318,9 +352,10 @@ export class RestaurantsComponent {
   this.router.navigate(['/restaurant', restaurantId]);
 }
   showSortOptions = false;
-  selectedSort = 'Relevance';
+  selectedSort = 'Sort By';
   
   sortOptions = [
+    
     'Relevance',
     'Delivery Time',
     'Rating',

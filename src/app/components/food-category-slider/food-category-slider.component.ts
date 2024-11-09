@@ -56,7 +56,7 @@ interface FoodCategory {
 
 
     .category-section {
-      margin-top: 80px; 
+      margin-top: -15px; 
       padding: 20px;
       position: relative;
       max-width: 1200px;

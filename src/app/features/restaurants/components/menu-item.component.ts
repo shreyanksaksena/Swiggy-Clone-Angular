@@ -6,11 +6,12 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from '../../../core/interfaces/menu-item.interface';
 import { Restaurant } from '../../../core/interfaces/restaurant.interface';
 import { FavoritesService } from '../../../core/services/favorites.service';
+import { FavoriteButtonComponent } from '../../../shared/favorite-button.component';
 
 @Component({
   selector: 'app-menu-item',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FavoriteButtonComponent],
   template: `
    <div class="py-5 border-b border-gray-200 last:border-b-0">
       <div class="flex justify-between gap-4">
@@ -31,6 +32,13 @@ import { FavoritesService } from '../../../core/services/favorites.service';
                 ★ Bestseller
               </span>
             }
+            
+            <!-- Favorite Button -->
+            <app-favorite-button
+              [isActive]="isFavorite"
+              (toggled)="toggleFavorite()"
+              class="ml-2"
+            ></app-favorite-button>
           </div>
 
           <!-- Item name and details -->
@@ -90,4 +98,3 @@ export class MenuItemComponent {
     }
   }
 }
-
