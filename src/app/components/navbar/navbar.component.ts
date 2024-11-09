@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { AuthService } from '../../core/services/auth.service';
 import { SearchService } from '../../core/services/search.service';
+import { HostListener } from '@angular/core'; 
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,7 @@ import { SearchService } from '../../core/services/search.service';
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
+    FormsModule,
   ],
   template: `
     <nav class="navbar">
@@ -50,10 +51,28 @@ import { SearchService } from '../../core/services/search.service';
             <span>Help</span>
           </a>
 
-          <div class="nav-item" (click)="toggleLogin()">
-            <span class="material-icons">person</span>
-            <span>Sign In</span>
-          </div>
+<!-- Replace this div in the navbar__right section -->
+<div class="nav-item" *ngIf="!isLoggedIn()" (click)="toggleLogin()">
+  <span class="material-icons">person</span>
+  <span>Sign In</span>
+</div>
+
+<div class="nav-item" *ngIf="isLoggedIn()">
+  <div class="flex items-center gap-2" (click)="toggleProfileMenu()">
+    <span class="material-icons">person</span>
+    <span>{{getCurrentUser()}}</span>
+  </div>
+  
+  <!-- Profile Dropdown Menu -->
+  @if (isProfileMenuOpen) {
+    <div class="profile-menu">
+      <button class="profile-menu-item" (click)="handleLogout()">
+        <span class="material-icons">logout</span>
+        <span>Logout</span>
+      </button>
+    </div>
+  }
+</div>
 
 <div class="flex items-center gap-4">
   <a 
@@ -89,41 +108,367 @@ import { SearchService } from '../../core/services/search.service';
         </div>
       </div>
 
-      <!-- Login Panel -->
-      <div class="login-panel" *ngIf="isLoginOpen" [@slideInOut]>
+  <!-- Login Panel with Backdrop -->
+    @if (isLoginOpen) {
+      <div class="login-backdrop" (click)="toggleLogin()"></div>
+      <div class="login-panel">
         <div class="login-panel__header">
-          <h2>Login</h2>
+          <h2>{{isSignUp ? 'Create Account' : 'Login'}}</h2>
           <button class="close-btn" (click)="toggleLogin()">
             <span class="material-icons">close</span>
           </button>
         </div>
 
         <div class="login-panel__content">
-          <div class="create-account">
-            or <a routerLink="/create-account">create an account</a>
-          </div>
+          @if (!isSignUp) {
+            <form (ngSubmit)="handleLogin()" class="space-y-4">
+              <div>
+                <input
+                  type="email"
+                  class="auth-input"
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="Email address"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="password"
+                  class="auth-input"
+                  [(ngModel)]="password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+              
+              @if (loginError) {
+                <div class="text-red-500 text-sm">{{loginError}}</div>
+              }
 
-          <input
-            type="tel"
-            class="phone-input"
-            [(ngModel)]="phoneNumber"
-            placeholder="Phone number"
-          />
+              <button type="submit" class="login-btn" [disabled]="isLoading">
+                {{isLoading ? 'LOGGING IN...' : 'LOGIN'}}
+              </button>
 
-          <button class="login-btn" (click)="handleLogin()">
-            LOGIN
-          </button>
+              <div class="text-center mt-4">
+                <p class="text-gray-600">
+                  Don't have an account? 
+                  <button 
+                    type="button"
+                    (click)="toggleSignUp()" 
+                    class="text-orange-500 hover:underline"
+                  >
+                    Create one
+                  </button>
+                </p>
+              </div>
+            </form>
+          } @else {
+            <form (ngSubmit)="handleSignUp()" class="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  class="auth-input"
+                  [(ngModel)]="name"
+                  name="name"
+                  placeholder="Full Name"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  class="auth-input"
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="Email address"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="password"
+                  class="auth-input"
+                  [(ngModel)]="password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="tel"
+                  class="auth-input"
+                  [(ngModel)]="phone"
+                  name="phone"
+                  placeholder="Phone number"
+                  required
+                />
+              </div>
 
-          <div class="terms">
-            By clicking on Login, I accept the 
-            <a routerLink="/terms">Terms & Conditions</a> & 
-            <a routerLink="/privacy">Privacy Policy</a>
-          </div>
+              <div class="terms-checkbox">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="termsAccepted"
+                    name="terms"
+                    required
+                  />
+                  <span class="text-sm text-gray-600">
+                    I accept the Terms & Conditions & Privacy Policy
+                  </span>
+                </label>
+              </div>
+
+              @if (signupError) {
+                <div class="text-red-500 text-sm">{{signupError}}</div>
+              }
+
+              <button 
+                type="submit" 
+                class="login-btn" 
+                [disabled]="isLoading || !termsAccepted"
+              >
+                {{isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}}
+              </button>
+
+              <div class="text-center mt-4">
+                <p class="text-gray-600">
+                  Already have an account? 
+                  <button 
+                    type="button"
+                    (click)="toggleSignUp()" 
+                    class="text-orange-500 hover:underline"
+                  >
+                    Login
+                  </button>
+                </p>
+              </div>
+            </form>
+          }
         </div>
       </div>
-    </nav>
+    }
+<!-- Add this backdrop div for the fade effect -->
+<div 
+  class="login-backdrop" 
+  *ngIf="isLoginOpen" 
+  [@fadeInOut]
+  (click)="toggleLogin()"
+></div>
   `,
   styles: [`
+.login-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .login-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 450px;
+      height: 100vh;
+      background: #fff;
+      padding: 2rem;
+      z-index: 1001;
+      overflow-y: auto;
+      box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+// Add if not already present
+.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #fc8019;
+}
+
+@media (max-width: 768px) {
+  .login-panel {
+    width: 100%;
+  }
+}
+  .login-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1200;
+}
+
+.login-panel {
+  background: #ffffff;
+  width: 450px;
+  height: 100%;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.login-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.login-panel__header h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #3d4152;
+}
+
+.login-panel__content {
+  padding-top: 16px;
+}
+
+    .auth-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d4d5d9;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+.auth-input:focus {
+  border-color: #fc8019;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #686b78;
+}
+
+.close-btn:hover {
+  color: #3d4152;
+}
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #fc8019;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+.login-btn:hover:not(:disabled) {
+  background: #f17012;
+}
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+.terms-checkbox {
+  margin: 16px 0;
+}
+
+@media (max-width: 768px) {
+  .login-panel {
+    width: 100%;
+  }
+}
+  .profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  width: 100%;
+  color: #3d4152;
+  transition: background-color 0.3s;
+}
+
+.profile-menu-item:hover {
+  background-color: #f2f2f2;
+}
+
+.terms-checkbox {
+  margin: 16px 0;
+}
+
+.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #fc8019;
+}
+
+  .auth-input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #d4d5d9;
+      border-radius: 4px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .auth-input:focus {
+      border-color: #fc8019;
+    }
+
+    .space-y-4 > * + * {
+      margin-top: 1rem;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-red-500 {
+      color: #ef4444;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+    }
+
+    .text-gray-600 {
+      color: #4b5563;
+    }
+
+    .text-orange-500 {
+      color: #fc8019;
+    }
+
+    .hover\\:underline:hover {
+      text-decoration: underline;
+    }
     :host {
       display: block;
       width: 100%;
@@ -443,16 +788,32 @@ import { SearchService } from '../../core/services/search.service';
   ]
 })
 export class NavbarComponent implements OnInit {
-  
-  currentLocation: string = "Kanakia Road, Baverly Park, Mira Road";
+   currentLocation: string = "Kanakia Road, Baverly Park, Mira Road";
   isSearchOpen: boolean = false;
   isLoginOpen: boolean = false;
   searchQuery: string = '';
-  phoneNumber: string = '';
 
-  @Input() cartItemCount: number = 0; 
+  // Add this with other properties
+isProfileMenuOpen = false;
+termsAccepted = false;
+  
+  // New auth-related properties
+  isSignUp = false;
+  email = '';
+  password = '';
+  name = '';
+  phone = '';
+  isLoading = false;
+  loginError = '';
+  signupError = '';
 
-constructor(private searchService: SearchService, private router: Router) {}
+  @Input() cartItemCount: number = 0;
+
+  constructor(
+    private searchService: SearchService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     // Initialize any required data
@@ -468,15 +829,34 @@ constructor(private searchService: SearchService, private router: Router) {}
   toggleLogin(): void {
     this.isLoginOpen = !this.isLoginOpen;
     if (!this.isLoginOpen) {
-      this.phoneNumber = '';
+      this.clearFields();
     }
   }
-onSearch(event: Event) {
+
+  onSearch(event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     if (query.trim()) {
       this.searchService.search(query);
       this.router.navigate(['/search']); // Navigate to search results page
     }
+  }
+  toggleProfileMenu(): void {
+  this.isProfileMenuOpen = !this.isProfileMenuOpen;
+}
+
+  toggleSignUp(): void {
+    this.isSignUp = !this.isSignUp;
+    this.clearFields();
+  }
+
+  clearFields(): void {
+    this.email = '';
+    this.password = '';
+    this.name = '';
+    this.phone = '';
+    this.loginError = '';
+    this.signupError = '';
+    this.searchQuery = '';
   }
 
   handleSearch(query: string): void {
@@ -484,6 +864,81 @@ onSearch(event: Event) {
   }
 
   handleLogin(): void {
-    console.log('Logging in with phone:', this.phoneNumber);
+    if (!this.email || !this.password) {
+      this.loginError = 'Please fill in all fields';
+      return;
+    }
+
+    this.isLoading = true;
+    this.loginError = '';
+
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.isLoginOpen = false;
+        this.clearFields();
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.loginError = 'Invalid email or password';
+        console.error('Login error:', err);
+      }
+    });
   }
+
+  handleSignUp(): void {
+  if (!this.email || !this.password || !this.name || !this.phone) {
+    this.signupError = 'Please fill in all fields';
+    return;
+  }
+
+  if (!this.termsAccepted) {
+    this.signupError = 'Please accept the Terms & Conditions';
+    return;
+  }
+
+  this.isLoading = true;
+  this.signupError = '';
+
+  const user = {
+    email: this.email,
+    password: this.password,
+    name: this.name,
+    phone: this.phone
+  };
+
+  this.authService.register(user).subscribe({
+    next: () => {
+      this.isLoading = false;
+      this.isSignUp = false;  // Switch to login form
+      this.clearFields();
+      // Show success message
+      alert('Account created successfully! Please login.');
+    },
+    error: (err) => {
+      this.isLoading = false;
+      this.signupError = 'Registration failed. Please try again.';
+      console.error('Registration error:', err);
+    }
+  });
+}
+
+  // Method to check if user is logged in
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  // Method to handle logout
+  handleLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
+
+  // Method to get current user
+getCurrentUser(): string {
+  const user = this.authService.getCurrentUser();
+  return user?.name ? user.name.split(' ')[0] : 'User';
+}
+  
 }

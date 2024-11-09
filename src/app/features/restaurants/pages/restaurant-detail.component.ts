@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MenuItemComponent } from '../components/menu-item.component';
 import { CartService } from '../../../core/services/cart.service';
 import { FavoritesService } from '../../../core/services/favorites.service';
+import { MenuSectionComponent } from '../components/menu-section.component';
 
 
 interface MenuItem {
@@ -32,154 +33,175 @@ interface Restaurant {
 }
 
 @Component({
- selector: 'app-restaurant-detail',
+  selector: 'app-restaurant-detail',
   standalone: true,
   imports: [CommonModule],
   template: `
-  
-  
-  
-    <div class="max-w-4xl mx-auto p-4 pt-20">
-      <!-- Restaurant Header -->
-      <div class="mb-4">
-        <h1 class="text-xl font-semibold mb-1">{{restaurant?.name}}</h1>
-        <p class="text-gray-600 text-sm">{{restaurant?.cuisines?.join(', ')}}</p>
-        <div class="flex items-center gap-2 mt-1">
-          <span class="text-gray-600 text-sm">{{restaurant?.location}}</span>
-          <span class="text-gray-400">|</span>
-          <span class="text-gray-600 text-sm">{{restaurant?.deliveryTime}}</span>
+    <div class="min-h-screen bg-white">
+      <!-- Breadcrumb -->
+      <div class="max-w-[800px] mx-auto px-4 lg:px-0 pt-20">
+        <div class="text-sm text-gray-600 pb-4">
+          Home / {{restaurant?.location}} / {{restaurant?.name}}
         </div>
-      </div>
 
-      <!-- Restaurant Info Card -->
-      @if (restaurant) {
-        <div class="bg-white rounded-lg p-6 mb-8">
-          <div class="flex items-start justify-between">
-            <div class="space-y-2">
-              <div class="flex items-center gap-2">
-                <!-- Rating Badge -->
-                <div class="flex items-center gap-1">
-                  <span class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
-                    <span class="text-white text-sm">★</span>
-                  </span>
-                  <span class="font-semibold">{{restaurant.rating}}</span>
-                  <span class="text-gray-500 text-sm">(5.8K+ ratings)</span>
-                </div>
-              </div>
-              <p class="text-gray-500 text-sm">₹350 for two</p>
-            </div>
-          </div>
-        </div>
+        <!-- Restaurant Name -->
+        <h1 class="text-xl font-bold">{{restaurant?.name}}</h1>
+
+        <!-- Info Box -->
+<div class="bg-white rounded-[8px] mt-4 p-4 shadow-[rgba(28,28,28,0.15)_0px_4px_16px]">
+  <div class="flex items-center gap-2">
+    <!-- Green Circle with White Star (No White Rectangle) -->
+    <span class="flex items-center justify-center w-5 h-5 bg-[#3d9b6d] rounded-full text-white shadow-[0_1px_5px_0_rgba(0,0,0,0.2)]">
+      ★
+    </span>
+    <span class="font-bold text-[#3d9b6d]">{{ restaurant?.rating }}</span>
+    <span class="text-[13px] text-[#8b8d97]">({{ restaurant?.rating }}K+ ratings)</span>
+    <span class="text-[#8b8d97]">•</span>
+    <span class="text-[13px] text-[#8b8d97]">₹350 for two</span>
+  </div>
+
+  <div class="text-[13px] text-[#7e808c] mt-2.5">{{ restaurant?.cuisines?.[0] }}</div>
+
+  <div class="mt-3.5 text-[13px]">
+    <div class="flex items-center gap-2">
+      <span class="font-medium">Outlet</span>
+      <span class="text-[#7e808c]">{{ restaurant?.location }}</span>
+      <span class="text-[#7e808c]">▼</span>
+    </div>
+    <div class="text-[#7e808c] mt-1">40-50mins</div>
+  </div>
+</div>
+
 
         <!-- Deals Section -->
-        <div class="mb-8">
-          <h2 class="text-lg font-bold mb-4">Deals for you</h2>
-          <div class="flex gap-4 overflow-x-auto pb-4">
-            <div class="flex-shrink-0 w-72 bg-white rounded-lg p-4 border">
-              <div class="flex items-center gap-3">
-                <div class="bg-blue-100 p-2 rounded-lg">
-                  <span class="text-blue-600 font-semibold">SAVE X2</span>
-                </div>
-                <div>
-                  <p class="font-semibold">Extra ₹25 Off</p>
-                  <p class="text-gray-500 text-sm">APPLICABLE OVER & ABOVE...</p>
-                </div>
-              </div>
-            </div>
-            <div class="flex-shrink-0 w-72 bg-white rounded-lg p-4 border">
-              <div class="flex items-center gap-3">
-                <div class="bg-orange-100 p-2 rounded-lg">
-                  <span class="text-orange-600 font-semibold">DEAL OF DAY</span>
-                </div>
-                <div>
-                  <p class="font-semibold">Items At ₹99</p>
-                  <p class="text-gray-500 text-sm">ON SELECT ITEMS</p>
-                </div>
-              </div>
+        <div class="mt-8">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Deals for you</h2>
+            <div class="flex gap-2">
+              <button class="w-9 h-9 rounded-full bg-[#E2E2E7] flex items-center justify-center">←</button>
+              <button class="w-9 h-9 rounded-full bg-[#E2E2E7] flex items-center justify-center">→</button>
             </div>
           </div>
-        </div>
 
-        <!-- Menu Section -->
-        <div>
-          <div class="text-center mb-8">
-            <h2 class="text-xl font-semibold">M E N U</h2>
-          </div>
-
-          <!-- Search Bar -->
-          <div class="relative mb-6">
-            <input 
-              type="text" 
-              placeholder="Search for dishes"
-              class="w-full p-3 pl-10 bg-gray-100 rounded-lg outline-none"
-            >
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              🔍
-            </span>
-          </div>
-
-          <!-- Menu Filters -->
-          <div class="flex gap-4 mb-6">
-            <button class="flex items-center gap-2 px-4 py-2 rounded-full border">
-              <span class="text-green-600">●</span>
-              <span>Veg</span>
-            </button>
-            <button class="flex items-center gap-2 px-4 py-2 rounded-full border">
-              <span class="text-red-600">●</span>
-              <span>Non-veg</span>
-            </button>
-            <button class="px-4 py-2 rounded-full border">
-              Bestseller
-            </button>
-          </div>
-
-          <!-- Menu Items -->
-          <div class="space-y-6">
-            @if (menuItems.length > 0) {
-              @for (item of menuItems; track item.id) {
-                <div class="flex justify-between py-4 border-b">
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                      @if (item.isVeg) {
-                        <span class="text-green-600">●</span>
-                      } @else {
-                        <span class="text-red-600">●</span>
-                      }
-                      @if (item.isBestSeller) {
-                        <span class="text-orange-500 text-sm">★ Bestseller</span>
-                      }
-                    </div>
-                    <h3 class="font-medium">{{item.name}}</h3>
-                    <p class="text-gray-900 mt-1">₹{{item.price}}</p>
-                    <p class="text-gray-500 text-sm mt-2">{{item.description}}</p>
+          <div class="flex gap-4 overflow-x-auto">
+            @if (restaurant?.hasOffer) {
+              <div class="flex-shrink-0 p-4 border border-[#e9e9eb] rounded-lg min-w-[240px] bg-white shadow-[0_4px_8px_0_rgba(0,0,0,0.08)]">
+                <div class="flex items-center gap-3">
+                  <div class="bg-[#f1f1f7] p-2 rounded">
+                    <div class="text-[13px] font-medium text-[#686b78]">SAVE X2</div>
                   </div>
-                  <div class="w-32 flex flex-col items-center">
-                    <button (click)="addToCart(item)" 
-                            class="w-24 px-4 py-2 bg-white text-green-600 border border-green-600 
-                                   rounded-md font-medium hover:bg-green-50">
-                      ADD
-                    </button>
+                  <div>
+                    <p class="font-medium text-[15px]">Extra ₹25 Off</p>
+                    <p class="text-[12px] text-[#93959f] mt-0.5">APPLICABLE OVER & ABOVE...</p>
                   </div>
                 </div>
-              }
-            } @else {
-              <div class="text-center py-8 text-gray-500">
-                No menu items available
+              </div>
+              <div class="flex-shrink-0 p-4 border border-[#e9e9eb] rounded-lg min-w-[240px] bg-white shadow-[0_4px_8px_0_rgba(0,0,0,0.08)]">
+                <div class="flex items-center gap-3">
+                  <div class="bg-[#fae6dd] p-2 rounded">
+                    <div class="text-[13px] font-medium text-[#db6742]">DEAL OF DAY</div>
+                  </div>
+                  <div>
+                    <p class="font-medium text-[15px]">Items At ₹189</p>
+                    <p class="text-[12px] text-[#93959f] mt-0.5">ON SELECT ITEMS</p>
+                  </div>
+                </div>
               </div>
             }
           </div>
         </div>
-      } @else {
-        <div class="text-center py-8">
-          <p class="text-gray-500">Restaurant not found</p>
+
+        <!-- Menu Section -->
+        <div class="mt-8">
+          <div class="text-center relative mb-8">
+            <span class="bg-white px-4 text-[#282c3f] text-sm font-medium tracking-wider relative z-10">MENU</span>
+            <div class="absolute top-1/2 left-0 right-0 h-[1px] bg-[#a9abb2] -z-0"></div>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="relative mb-8">
+            <input 
+              type="text"
+              placeholder="Search for dishes..."
+              class="w-full px-4 py-2.5 bg-[#f1f1f6] rounded-lg focus:outline-none text-sm placeholder:text-[#7e808c]"
+            >
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[#7e808c]">🔍</span>
+          </div>
+
+          <!-- Filter Buttons -->
+          <div class="flex gap-4 mb-6">
+            <div class="flex items-center gap-2 px-4 py-2 border border-[#e9e9eb] rounded-full cursor-pointer">
+              <span class="w-4 h-4 border border-green-600 flex items-center justify-center p-[2px]">
+                <span class="w-full h-full bg-green-600"></span>
+              </span>
+              <span class="text-sm">Pure Veg</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 border border-[#e9e9eb] rounded-full cursor-pointer">
+              <span class="w-4 h-4 border border-red-600 flex items-center justify-center p-[2px]">
+                <span class="w-full h-full bg-red-600"></span>
+              </span>
+              <span class="text-sm">Non Veg</span>
+            </div>
+            <div class="px-4 py-2 border border-[#e9e9eb] rounded-full cursor-pointer">
+              <span class="text-sm">Bestseller</span>
+            </div>
+          </div>
+
+          <!-- Menu Items -->
+          <div class="bg-white rounded-lg border border-[#e9e9eb] shadow-[0_4px_8px_0_rgba(0,0,0,0.08)]">
+            @for (item of menuItems; track item.id) {
+              <div class="p-5 border-b border-[#e9e9eb] last:border-0">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                      @if (item.isVeg) {
+                        <span class="w-4 h-4 border border-green-600 flex items-center justify-center p-[2px]">
+                          <span class="w-full h-full bg-green-600"></span>
+                        </span>
+                      } @else {
+                        <span class="w-4 h-4 border border-red-600 flex items-center justify-center p-[2px]">
+                          <span class="w-full h-full bg-red-600"></span>
+                        </span>
+                      }
+                      @if (item.isBestSeller) {
+                        <span class="text-[#ee9c00] text-[13px] font-medium">★ Bestseller</span>
+                      }
+                    </div>
+                    <h3 class="text-[#282c3f] text-base font-medium mt-2">{{item.name}}</h3>
+                    <p class="text-[#282c3f] font-medium text-sm mt-1">₹{{item.price}}</p>
+                    <p class="text-[#7e808c] text-sm mt-3 leading-[1.3]">{{item.description}}</p>
+                  </div>
+                  <div class="min-w-[118px] flex flex-col items-center">
+                    <button 
+                      (click)="addToCart(item)"
+                      class="w-24 h-[34px] bg-white text-[#60b246] text-sm font-medium border border-[#d4d5d9] 
+                             rounded-md hover:border-[#60b246] uppercase"
+                    >
+                      ADD
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
         </div>
-      }
+      </div>
     </div>
   `,
   styles: [`
     :host {
       display: block;
-      background-color: #f1f1f6;
+    }
+    
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .overflow-x-auto::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .overflow-x-auto {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
     }
   `]
 })
