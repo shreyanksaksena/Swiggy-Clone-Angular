@@ -282,7 +282,7 @@ import { HostListener } from '@angular/core';
       box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
     }
 
-// Add if not already present
+
 .disabled {
   opacity: 0.7;
   cursor: not-allowed;
@@ -793,11 +793,11 @@ export class NavbarComponent implements OnInit {
   isLoginOpen: boolean = false;
   searchQuery: string = '';
 
-  // Add this with other properties
+
 isProfileMenuOpen = false;
 termsAccepted = false;
   
-  // New auth-related properties
+
   isSignUp = false;
   email = '';
   password = '';
@@ -816,7 +816,7 @@ termsAccepted = false;
   ) {}
 
   ngOnInit(): void {
-    // Initialize any required data
+
   }
 
   toggleSearch(): void {
@@ -837,7 +837,7 @@ termsAccepted = false;
     const query = (event.target as HTMLInputElement).value;
     if (query.trim()) {
       this.searchService.search(query);
-      this.router.navigate(['/search']); // Navigate to search results page
+      this.router.navigate(['/search']); 
     }
   }
   toggleProfileMenu(): void {
@@ -911,9 +911,9 @@ termsAccepted = false;
   this.authService.register(user).subscribe({
     next: () => {
       this.isLoading = false;
-      this.isSignUp = false;  // Switch to login form
+      this.isSignUp = false;  
       this.clearFields();
-      // Show success message
+     
       alert('Account created successfully! Please login.');
     },
     error: (err) => {
@@ -924,18 +924,18 @@ termsAccepted = false;
   });
 }
 
-  // Method to check if user is logged in
+
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
-  // Method to handle logout
+
   handleLogout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
   }
 
-  // Method to get current user
+
 getCurrentUser(): string {
   const user = this.authService.getCurrentUser();
   return user?.name ? user.name.split(' ')[0] : 'User';
