@@ -1,4 +1,3 @@
-// src/app/core/interfaces/menu-item.interface.ts
 export interface MenuItem {
   id: number;
   restaurantId: number;
@@ -9,5 +8,5 @@ export interface MenuItem {
   isVeg: boolean;
   rating?: number;
   isBestSeller?: boolean;
-  offerText?: string; // Made optional with ?
+  offerText?: string; 
 }

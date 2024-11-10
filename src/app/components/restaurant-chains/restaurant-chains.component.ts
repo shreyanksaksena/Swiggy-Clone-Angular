@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';  // Correct import here
-import { inject } from '@angular/core';  // Add inject import
+import { Router, RouterModule } from '@angular/router'; 
+import { inject } from '@angular/core'; 
 
 
 interface Restaurant {
@@ -472,6 +472,4 @@ slide(direction: 'prev' | 'next') {
     this.translateX -= this.itemWidth * itemsToSlide;
   }
 }
-
-
 }

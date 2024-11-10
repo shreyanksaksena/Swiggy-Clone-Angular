@@ -51,7 +51,7 @@ import { HostListener } from '@angular/core';
             <span>Help</span>
           </a>
 
-<!-- Replace this div in the navbar__right section -->
+
 <div class="nav-item" *ngIf="!isLoggedIn()" (click)="toggleLogin()">
   <span class="material-icons">person</span>
   <span>Sign In</span>
@@ -108,7 +108,7 @@ import { HostListener } from '@angular/core';
         </div>
       </div>
 
-  <!-- Login Panel with Backdrop -->
+  <!-- Login Panel -->
     @if (isLoginOpen) {
       <div class="login-backdrop" (click)="toggleLogin()"></div>
       <div class="login-panel">
@@ -250,7 +250,7 @@ import { HostListener } from '@angular/core';
         </div>
       </div>
     }
-<!-- Add this backdrop div for the fade effect -->
+
 <div 
   class="login-backdrop" 
   *ngIf="isLoginOpen" 
@@ -259,7 +259,7 @@ import { HostListener } from '@angular/core';
 ></div>
   `,
   styles: [`
-/* Navbar Styles */
+
 .navbar {
   position: fixed;
   top: 0;
@@ -325,7 +325,7 @@ import { HostListener } from '@angular/core';
   gap: 40px;
 }
 
-/* Navigation Items */
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -356,7 +356,7 @@ import { HostListener } from '@angular/core';
   font-weight: 600;
 }
 
-/* Login Panel Styles */
+
 .login-backdrop {
   position: fixed;
   top: 0;
@@ -394,7 +394,6 @@ import { HostListener } from '@angular/core';
   color: #3d4152;
 }
 
-/* Search Modal */
 .search-modal {
   position: fixed;
   top: 0;
@@ -435,7 +434,6 @@ import { HostListener } from '@angular/core';
   border-color: #fc8019;
 }
 
-/* Form Elements */
 .auth-input {
   width: 100%;
   padding: 1rem;
@@ -486,7 +484,6 @@ import { HostListener } from '@angular/core';
   color: #3d4152;
 }
 
-/* Cart Badge */
 .cart-badge {
   position: relative;
 }
@@ -505,7 +502,6 @@ import { HostListener } from '@angular/core';
   text-align: center;
 }
 
-/* Profile Menu */
 .profile-menu {
   position: absolute;
   top: 100%;
@@ -532,7 +528,6 @@ import { HostListener } from '@angular/core';
   background-color: #f2f2f2;
 }
 
-/* Utility Classes */
 .text-center { text-align: center; }
 .text-red-500 { color: #ef4444; }
 .text-gray-600 { color: #4b5563; }
@@ -543,7 +538,6 @@ import { HostListener } from '@angular/core';
   margin-top: 1rem;
 }
 
-/* Checkbox Styles */
 .terms-checkbox {
   display: flex;
   align-items: center;
@@ -557,7 +551,6 @@ import { HostListener } from '@angular/core';
   accent-color: #fc8019;
 }
 
-/* Animations */
 @keyframes slideIn {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
@@ -576,7 +569,6 @@ import { HostListener } from '@angular/core';
   animation: slideOut 0.3s ease-in forwards;
 }
 
-/* Responsive Styles */
 @media (max-width: 1024px) {
   .navbar__container {
     padding: 0 16px;
@@ -654,11 +646,10 @@ import { HostListener } from '@angular/core';
   }
 
   .search-modal__content input {
-    font-size: 16px; /* Prevents zoom on mobile */
+    font-size: 16px; 
   }
 }
 
-/* Print Styles */
 @media print {
   .navbar,
   .login-panel,
@@ -836,7 +827,6 @@ termsAccepted = false;
     this.router.navigate(['/']);
   }
 
-  // Method to get current user
 getCurrentUser(): string {
   const user = this.authService.getCurrentUser();
   return user?.name ? user.name.split(' ')[0] : 'User';

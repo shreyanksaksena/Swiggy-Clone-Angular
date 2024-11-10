@@ -1,5 +1,3 @@
-// src/app/core/services/order.service.ts
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
@@ -80,7 +78,6 @@ export class OrderService {
       return throwError(() => new Error('Cart is empty'));
     }
 
-    // Get restaurant details from first item
     const firstItem = cartItems[0];
     const restaurantId = firstItem.restaurantId;
 
@@ -96,7 +93,7 @@ export class OrderService {
       })),
       restaurantDetails: {
         id: restaurantId,
-        name: firstItem.name.split(' ')[0], // Temporary, should come from restaurant service
+        name: firstItem.name.split(' ')[0], 
         image: './assets/chains/placeholder.png',
         location: 'Restaurant Location'
       },
@@ -109,12 +106,11 @@ export class OrderService {
       status: 'PENDING',
       specialInstructions: orderData.specialInstructions,
       orderDate: new Date().toISOString(),
-      estimatedDeliveryTime: new Date(Date.now() + 45 * 60000).toISOString() // 45 mins from now
+      estimatedDeliveryTime: new Date(Date.now() + 45 * 60000).toISOString() 
     };
 
     return this.http.post<Order>(`${this.API_URL}/orders`, order).pipe(
       map(response => {
-        // Clear cart after successful order
         this.clearCart();
         return response;
       }),
@@ -178,10 +174,9 @@ export class OrderService {
     return this.updateOrderStatus(orderId, 'CANCELLED');
   }
 
-  // Helper method to get estimated delivery time
   getEstimatedDeliveryTime(distance: number): Date {
-    const baseTime = 30; // Base preparation time in minutes
-    const timePerKm = 5; // Additional minutes per kilometer
+    const baseTime = 30; 
+    const timePerKm = 5; 
     const totalMinutes = baseTime + (distance * timePerKm);
     
     return new Date(Date.now() + totalMinutes * 60000);

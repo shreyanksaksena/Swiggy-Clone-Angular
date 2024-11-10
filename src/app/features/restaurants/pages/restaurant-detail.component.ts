@@ -1,4 +1,3 @@
-// src/app/features/restaurants/pages/restaurant-detail.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -38,19 +37,13 @@ interface Restaurant {
   imports: [CommonModule],
   template: `
     <div class="min-h-screen bg-white">
-      <!-- Breadcrumb -->
       <div class="max-w-[800px] mx-auto px-4 lg:px-0 pt-20">
         <div class="text-sm text-gray-600 pb-4">
           Home / {{restaurant?.location}} / {{restaurant?.name}}
         </div>
-
-        <!-- Restaurant Name -->
         <h1 class="text-xl font-bold">{{restaurant?.name}}</h1>
-
-        <!-- Info Box -->
 <div class="bg-white rounded-[8px] mt-4 p-4 shadow-[rgba(28,28,28,0.15)_0px_4px_16px]">
   <div class="flex items-center gap-2">
-    <!-- Green Circle with White Star (No White Rectangle) -->
     <span class="flex items-center justify-center w-5 h-5 bg-[#3d9b6d] rounded-full text-white shadow-[0_1px_5px_0_rgba(0,0,0,0.2)]">
       ★
     </span>
@@ -193,15 +186,13 @@ interface Restaurant {
       display: block;
     }
     
-    /* Hide scrollbar for Chrome, Safari and Opera */
     .overflow-x-auto::-webkit-scrollbar {
       display: none;
     }
 
-    /* Hide scrollbar for IE, Edge and Firefox */
     .overflow-x-auto {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  
+      scrollbar-width: none; 
     }
   `]
 })
@@ -209,7 +200,6 @@ export class RestaurantDetailComponent implements OnInit {
   restaurant: Restaurant | undefined;
   menuItems: MenuItem[] = [];
 
-  // Define restaurants array here
   restaurants: Restaurant[] = [
 {
     id: 1,
@@ -434,7 +424,6 @@ export class RestaurantDetailComponent implements OnInit {
 
   ];
 
-  // Sample menu items
   sampleMenuItems: Record<number, MenuItem[]> = {
     1: [ // Menu items for Pizza Hut
     {
@@ -1419,7 +1408,6 @@ toggleFavorite(menuItem: MenuItem, restaurant: Restaurant): { success: boolean; 
       };
     }
 
-    // Validate core required fields
     if (!menuItem?.id || !restaurant?.id || !menuItem?.name || !restaurant?.name) {
       return {
         success: false,

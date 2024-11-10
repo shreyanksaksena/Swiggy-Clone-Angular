@@ -28,7 +28,7 @@ export const restaurants: Restaurant[] = [
 ];
 
 export const menuItems: Record<number, MenuItem[]> = {
-  2: [ // Burger King Menu
+  2: [ 
     {
       id: 1,
       restaurantId: 2,

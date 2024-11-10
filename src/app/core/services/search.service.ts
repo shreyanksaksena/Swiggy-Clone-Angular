@@ -1,4 +1,3 @@
-// src/app/core/services/search.service.ts
 import { Injectable, signal } from '@angular/core';
 import { MenuItem } from '../interfaces/menu-item.interface';
 import { Restaurant } from '../interfaces/restaurant.interface';
@@ -1402,10 +1401,9 @@ export class SearchService {
   };
 
   constructor() {
-    // Initialize with all your restaurants and menu items data
   }
 
-  // Search through all menu items across all restaurants
+
   search(query: string): SearchResult[] {
     if (!query.trim()) {
       this.searchResults.set([]);
@@ -1415,13 +1413,11 @@ export class SearchService {
     const normalizedQuery = query.toLowerCase().trim();
     const results: SearchResult[] = [];
 
-    // Search through all restaurants' menu items
     Object.values(this.menuItemsData).forEach(menuItems => {
       menuItems.forEach(menuItem => {
         const restaurant = this.restaurantsData.find(r => r.id === menuItem.restaurantId);
         if (!restaurant) return;
 
-        // Check if the query matches menu item name, description, or category
         if (
           menuItem.name.toLowerCase().includes(normalizedQuery) ||
           menuItem.description.toLowerCase().includes(normalizedQuery) ||
@@ -1439,17 +1435,13 @@ export class SearchService {
     return results;
   }
 
-  // Get current search results
   getSearchResults() {
     return this.searchResults();
   }
 
-  // Clear search results
   clearSearch() {
     this.searchResults.set([]);
   }
-
-  // Filter results by dietary preference
   filterByDiet(isVeg: boolean) {
     const currentResults = this.searchResults();
     const filteredResults = currentResults.filter(result => result.menuItem.isVeg === isVeg);
@@ -1457,7 +1449,6 @@ export class SearchService {
     return filteredResults;
   }
 
-  // Filter results by price range
   filterByPriceRange(minPrice: number, maxPrice: number) {
     const currentResults = this.searchResults();
     const filteredResults = currentResults.filter(result => 
@@ -1467,7 +1458,6 @@ export class SearchService {
     return filteredResults;
   }
 
-  // Filter results by restaurant rating
   filterByRestaurantRating(minRating: number) {
     const currentResults = this.searchResults();
     const filteredResults = currentResults.filter(result => 

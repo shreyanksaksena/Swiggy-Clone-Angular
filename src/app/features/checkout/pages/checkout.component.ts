@@ -1,4 +1,3 @@
-// src/app/features/checkout/pages/checkout.component.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -34,7 +33,6 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Cart Items and Account Section -->
           <div class="lg:col-span-2 space-y-4">
             <!-- Cart Items -->
             <div class="bg-white rounded-lg shadow-sm p-4" *ngIf="cartItems().length > 0; else emptyCart">
@@ -70,8 +68,6 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
                   <span class="font-medium">₹{{ item.price * item.quantity }}</span>
                 </div>
               </div>
-
-              <!-- Suggestions Box -->
               <div class="mt-4">
                 <textarea 
                   placeholder="Any suggestions? We will pass it on..."
@@ -79,8 +75,6 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
                   class="w-full p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
                 ></textarea>
               </div>
-
-              <!-- No-contact Delivery Option -->
               <div class="mt-4 flex items-start gap-3 p-4 border rounded-lg">
                 <input type="checkbox" class="mt-1">
                 <div>
@@ -92,7 +86,6 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
               </div>
             </div>
 
-            <!-- Empty Cart Message -->
             <ng-template #emptyCart>
               <div class="text-center py-8">
                 <p class="text-gray-500">Your cart is empty</p>
@@ -102,7 +95,6 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
               </div>
             </ng-template>
 
-            <!-- Account Section - Only show if not logged in -->
             @if (!isLoggedIn()) {
               <div class="bg-white rounded-lg shadow-sm p-4">
                 <h2 class="font-semibold mb-4">Account</h2>
@@ -118,7 +110,6 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
               </div>
             }
 
-            <!-- Place Order Button - Only show if logged in -->
             @if (isLoggedIn() && cartItems().length > 0) {
               <div class="bg-white rounded-lg shadow-sm p-4">
                 <button 
@@ -166,7 +157,7 @@ import { OrderReceiptComponent } from "../../orders/components/order-success-rec
               </div>
             </div>
           </div>
-          <!-- Order Receipt Modal - Place it here -->
+
   <div class="modal" *ngIf="showReceipt" (click)="closeReceipt($event)">
     <div class="modal-content">
       <app-order-receipt 
@@ -241,15 +232,10 @@ export class CheckoutComponent {
 
     try {
   const order = await this.orderService.placeOrder(orderData).toPromise();
-  
-  // Empty the cart
   this.emptyCart();
-  
-  // Show receipt (with non-null assertion)
-  this.placedOrder = order!;  // Use non-null assertion
+  this.placedOrder = order!;  
   this.showReceipt = true;
-  
-  // After 5 seconds, navigate to orders page
+
   setTimeout(() => {
     this.closeReceipt();
     if (order?.id) {
@@ -269,7 +255,6 @@ export class CheckoutComponent {
 
   closeReceipt(event?: MouseEvent) {
     if (event) {
-      // Only close if clicking outside the receipt
       if ((event.target as HTMLElement).classList.contains('modal')) {
         this.showReceipt = false;
         this.placedOrder = null;
@@ -279,7 +264,6 @@ export class CheckoutComponent {
       this.placedOrder = null;
     }
   }
-  // Helper method to empty cart
   private emptyCart() {
     const items = this.cartItems();
     items.forEach(item => {

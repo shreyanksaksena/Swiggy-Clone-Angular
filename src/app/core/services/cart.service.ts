@@ -1,4 +1,3 @@
-// src/app/core/services/cart.service.ts
 import { Injectable, signal } from '@angular/core';
 import { computed } from '@angular/core';
 import { CartItem } from '../interfaces/cart-item.interface';

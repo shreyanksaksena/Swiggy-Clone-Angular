@@ -56,9 +56,6 @@ interface Restaurant {
 
 <!-- Restaurants Grid -->
 <div class="min-h-screen bg-cover bg-center pt-2" style="background-image: url('path-to-your-background-image.jpg');">
-
-    <!-- Grid Layout for Restaurants with More Spacing -->
-   <!-- Change to 4 columns in large screens -->
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
       <div 
         class="restaurant-card cursor-pointer overflow-hidden rounded-xl"
@@ -102,7 +99,6 @@ interface Restaurant {
 
   `,
   styles: [`
-/* Base container and layout */
 .container {
   max-width: 2000px;
   margin: 0 auto;
@@ -112,11 +108,10 @@ interface Restaurant {
 .heading {
   font-size: 24px;
   font-weight: 600;
-  color: #000; /* Changed to black */
+  color: #000; 
   margin-bottom: 20px;
 }
 
-/* Grid Layout */
 .restaurants-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -124,7 +119,6 @@ interface Restaurant {
   padding: 20px 0;
 }
 
-/* Restaurant Card */
 .restaurant-card {
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -137,7 +131,6 @@ interface Restaurant {
   transform: scale(0.98);
 }
 
-/* Image Container */
 .card-image {
   position: relative;
   width: 100%;
@@ -157,7 +150,6 @@ interface Restaurant {
   transform: scale(1.05);
 }
 
-/* Offer Badge */
 .offer-badge {
   position: absolute;
   bottom: 0;
@@ -170,16 +162,16 @@ interface Restaurant {
   font-weight: 600;
 }
 
-/* Card Content */
+
 .card-content {
   padding: 16px;
-  color: #000; /* Changed to black */
+  color: #000; 
 }
 
 .restaurant-name {
   font-size: 18px;
   font-weight: 600;
-  color: #000; /* Changed to black */
+  color: #000; 
   margin-bottom: 8px;
 }
 
@@ -206,32 +198,31 @@ interface Restaurant {
 }
 
 .rating {
-  color: #000; /* Changed to black */
+  color: #000;      
   font-weight: 600;
 }
 
 .dot {
-  color: #000; /* Changed to black */
+  color: #000; 
 }
 
 .delivery-time {
-  color: #000; /* Changed to black */
+  color: #000; 
   font-weight: 500;
 }
 
 .cuisines {
-  color: #333; /* Dark gray for better readability */
+  color: #333; 
   font-size: 14px;
   margin-bottom: 4px;
   line-height: 1.4;
 }
 
 .location {
-  color: #333; /* Dark gray for better readability */
+  color: #333; 
   font-size: 14px;
 }
 
-/* Filter Section */
 .filters-container {
   padding: 1rem 0;
   margin-bottom: 20px;
@@ -251,17 +242,17 @@ interface Restaurant {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.2); /* Semi-transparent black border */
+  border: 1px solid rgba(0, 0, 0, 0.2); 
   border-radius: 18px;
   background: transparent;
   font-size: 14px;
-  color: #000; /* Changed to black */
+  color: #000; 
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .filter-btn:hover {
-  background: rgba(0, 0, 0, 0.05); /* Very light black background on hover */
+  background: rgba(0, 0, 0, 0.05); 
 }
 
 .filter-chips {
@@ -272,26 +263,25 @@ interface Restaurant {
 
 .filter-chip {
   padding: 8px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.2); /* Semi-transparent black border */
+  border: 1px solid rgba(0, 0, 0, 0.2); 
   border-radius: 18px;
   font-size: 14px;
-  color: #000; /* Changed to black */
+  color: #000; 
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.3s ease;
 }
 
 .filter-chip:hover {
-  background: rgba(0, 0, 0, 0.05); /* Very light black background on hover */
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .filter-chip.active {
-  background: #000; /* Black background when active */
-  color: #fff; /* White text when active */
+  background: #000; 
+  color: #fff; 
   border-color: transparent;
 }
 
-/* Line Separator */
 .line-container {
   display: flex;
   justify-content: center;
@@ -301,11 +291,10 @@ interface Restaurant {
 .custom-hr {
   border: none;
   height: 1px;
-  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent black */
+  background-color: rgba(0, 0, 0, 0.1); 
   width: 90%;
 }
 
-/* Responsive Design */
 @media (max-width: 1600px) {
   .restaurants-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -634,7 +623,6 @@ export class RestaurantsComponent {
         case 'offers':
           filtered = filtered.filter(r => r.hasOffer);
           break;
-        // Add more filter cases as needed
       }
     });
 
@@ -648,7 +636,6 @@ export class RestaurantsComponent {
           return b.rating - a.rating;
         case 'Delivery Time':
           return parseInt(a.deliveryTime) - parseInt(b.deliveryTime);
-        // Add more sorting cases
         default:
           return 0;
       }

@@ -1,5 +1,3 @@
-// src/app/features/restaurants/components/menu-section.component.ts
-
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuItemComponent } from './menu-item.component';
@@ -12,7 +10,6 @@ import { Restaurant } from '../../../core/interfaces/restaurant.interface';
   imports: [CommonModule, MenuItemComponent],
   template: `
   <div class="menu-section mb-6">
-      <!-- Section Header -->
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
           <h2 class="text-base font-bold text-[#3e4152]">{{ title }}</h2>

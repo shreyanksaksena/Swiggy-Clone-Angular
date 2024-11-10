@@ -1,5 +1,3 @@
-// src/app/features/restaurants/components/menu-item.component.ts
-
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -41,13 +39,11 @@ import { FavoriteButtonComponent } from '../../../shared/favorite-button.compone
             ></app-favorite-button>
           </div>
 
-          <!-- Item name and details -->
           <h3 class="text-[#3e4152] text-base font-medium">{{ item.name }}</h3>
           <div class="mt-1">
             <span class="text-[#3e4152]">₹{{ item.price }}</span>
           </div>
 
-          <!-- Description -->
           <p class="text-[#282c3f99] text-sm mt-3 leading-[1.3]">
             {{ item.description }}
           </p>

@@ -1,4 +1,3 @@
-// src/app/features/search/components/search-results.component.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -98,7 +97,7 @@ export class SearchResultsComponent {
     }
 
     if (!this.activeFilters.veg && !this.activeFilters.nonVeg) {
-      this.searchService.search(''); // Reset to original search results
+      this.searchService.search(''); 
     } else {
       this.searchService.filterByDiet(isVeg);
     }
@@ -109,7 +108,7 @@ export class SearchResultsComponent {
     if (this.activeFilters.topRated) {
       this.searchService.filterByRestaurantRating(rating);
     } else {
-      this.searchService.search(''); // Reset to original search results
+      this.searchService.search(''); 
     }
   }
 

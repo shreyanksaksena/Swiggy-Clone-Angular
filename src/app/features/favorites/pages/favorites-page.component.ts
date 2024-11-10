@@ -1,4 +1,3 @@
-// src/app/features/favorites/pages/favorites-page.component.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';

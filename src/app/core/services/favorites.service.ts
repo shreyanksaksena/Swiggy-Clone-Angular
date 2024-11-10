@@ -1,4 +1,3 @@
-// src/app/core/services/favorites.service.ts
 import { Injectable, signal, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { MenuItem } from '../interfaces/menu-item.interface';
@@ -62,14 +61,13 @@ export class FavoritesService {
     const existingFavorite = this.favorites().find(f => f.menuItem.id === menuItem.id);
     
     if (!existingFavorite) {
-      // Handle optional properties with default values
       const restaurantInfo = {
         id: restaurant.id,
         name: restaurant.name,
         image: restaurant.image,
         rating: restaurant.rating,
-        hasOffer: restaurant.hasOffer ?? false, // Default to false if undefined
-        offerText: restaurant.offerText ?? '', // Default to empty string if undefined
+        hasOffer: restaurant.hasOffer ?? false, 
+        offerText: restaurant.offerText ?? '', 
         location: restaurant.location ?? '',
         deliveryTime: restaurant.deliveryTime ?? '',
         cuisines: restaurant.cuisines ?? []
@@ -116,8 +114,6 @@ export class FavoritesService {
   getFavoritesCount(): number {
     return this.favorites().length;
   }
-
-  // Additional utility methods
 
   sortFavoritesByDate(ascending: boolean = true): FavoriteItem[] {
     return [...this.favorites()].sort((a, b) => {
