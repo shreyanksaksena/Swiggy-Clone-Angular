@@ -1,14 +1,17 @@
 // src/app/features/checkout/pages/checkout.component.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { Order, OrderService } from '../../../core/services/order.service';
+import { OrderReceiptComponent } from "../../orders/components/order-success-receipt/order-success-receipt.component";
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, OrderReceiptComponent],
   template: `
     <div class="min-h-screen bg-gray-100 pt-20">
       <div class="max-w-6xl mx-auto px-4 py-6">
@@ -21,7 +24,11 @@ import { FormsModule } from '@angular/forms';
                 <span class="material-icons">help</span>
                 Help
               </button>
-              <button class="text-gray-600">Sign In</button>
+              @if (!isLoggedIn()) {
+                <button routerLink="/login" class="text-gray-600">Sign In</button>
+              } @else {
+                <span class="text-gray-600">Welcome, {{ currentUser()?.name }}</span>
+              }
             </div>
           </div>
         </div>
@@ -95,19 +102,38 @@ import { FormsModule } from '@angular/forms';
               </div>
             </ng-template>
 
-            <!-- Account Section -->
-            <div class="bg-white rounded-lg shadow-sm p-4">
-              <h2 class="font-semibold mb-4">Account</h2>
-              <p class="text-gray-600">To place your order now, log in to your existing account or sign up.</p>
-              <div class="flex gap-4 mt-4">
-                <button class="px-6 py-2 border border-green-600 text-green-600 rounded-lg">
-                  LOG IN
-                </button>
-                <button class="px-6 py-2 bg-green-600 text-white rounded-lg">
-                  SIGN UP
+            <!-- Account Section - Only show if not logged in -->
+            @if (!isLoggedIn()) {
+              <div class="bg-white rounded-lg shadow-sm p-4">
+                <h2 class="font-semibold mb-4">Account</h2>
+                <p class="text-gray-600">To place your order now, log in to your existing account or sign up.</p>
+                <div class="flex gap-4 mt-4">
+                  <button routerLink="/login" class="px-6 py-2 border border-green-600 text-green-600 rounded-lg">
+                    LOG IN
+                  </button>
+                  <button routerLink="/register" class="px-6 py-2 bg-green-600 text-white rounded-lg">
+                    SIGN UP
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- Place Order Button - Only show if logged in -->
+            @if (isLoggedIn() && cartItems().length > 0) {
+              <div class="bg-white rounded-lg shadow-sm p-4">
+                <button 
+                  (click)="placeOrder()"
+                  class="w-full py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 
+                         transition-colors duration-200 flex items-center justify-center gap-2"
+                  [disabled]="isProcessing"
+                >
+                  @if (isProcessing) {
+                    <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  }
+                  {{ isProcessing ? 'Processing...' : 'Place Order • ₹' + grandTotal() }}
                 </button>
               </div>
-            </div>
+            }
           </div>
 
           <!-- Bill Details -->
@@ -140,9 +166,19 @@ import { FormsModule } from '@angular/forms';
               </div>
             </div>
           </div>
+          <!-- Order Receipt Modal - Place it here -->
+  <div class="modal" *ngIf="showReceipt" (click)="closeReceipt($event)">
+    <div class="modal-content">
+      <app-order-receipt 
+        *ngIf="placedOrder" 
+        [order]="placedOrder">
+      </app-order-receipt>
+      <button class="close-button" (click)="closeReceipt($event)">×</button>
+    </div>
+  </div>
+</div>
         </div>
       </div>
-    </div>
   `,
   styles: [`
     :host {
@@ -151,18 +187,103 @@ import { FormsModule } from '@angular/forms';
   `]
 })
 export class CheckoutComponent {
-  constructor(private cartService: CartService) {}
+  private cartService = inject(CartService);
+  private authService = inject(AuthService);
+  private orderService = inject(OrderService);
+  private router = inject(Router);
 
-  cartItems = () => this.cartService.getCartItems();
-  totalAmount = () => this.cartService.totalAmount();
-
+  isProcessing = false;
+  contactlessDelivery = false;
+  specialInstructions = '';
   deliveryDistance = 4.0;
   deliveryFee = 95;
   platformFee = 6;
+  showReceipt = false;
+  placedOrder: Order | null = null;
+
+  cartItems = () => this.cartService.getCartItems();
+  totalAmount = () => this.cartService.totalAmount();
+  isLoggedIn = () => this.authService.isLoggedIn();
+  currentUser = () => this.authService.getCurrentUser();
+  
   gstCharges = () => Math.round(this.totalAmount() * 0.05);
   grandTotal = () => this.totalAmount() + this.deliveryFee + this.platformFee + this.gstCharges();
 
   updateQuantity(itemId: number, quantity: number) {
     this.cartService.updateQuantity(itemId, quantity);
+  }
+
+ async placeOrder() {
+    if (!this.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.cartItems().length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    this.isProcessing = true;
+
+    const orderData = {
+      contactless: this.contactlessDelivery,
+      specialInstructions: this.specialInstructions,
+      deliveryDistance: this.deliveryDistance,
+      billing: {
+        itemTotal: this.totalAmount(),
+        deliveryFee: this.deliveryFee,
+        platformFee: this.platformFee,
+        gstCharges: this.gstCharges(),
+        totalAmount: this.grandTotal()
+      }
+    };
+
+    try {
+  const order = await this.orderService.placeOrder(orderData).toPromise();
+  
+  // Empty the cart
+  this.emptyCart();
+  
+  // Show receipt (with non-null assertion)
+  this.placedOrder = order!;  // Use non-null assertion
+  this.showReceipt = true;
+  
+  // After 5 seconds, navigate to orders page
+  setTimeout(() => {
+    this.closeReceipt();
+    if (order?.id) {
+      this.router.navigate(['/orders', order.id]);
+    } else {
+      this.router.navigate(['/orders']);
+    }
+  }, 5000);
+  
+} catch (error){
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again.');
+    } finally {
+      this.isProcessing = false;
+    }
+  }
+
+  closeReceipt(event?: MouseEvent) {
+    if (event) {
+      // Only close if clicking outside the receipt
+      if ((event.target as HTMLElement).classList.contains('modal')) {
+        this.showReceipt = false;
+        this.placedOrder = null;
+      }
+    } else {
+      this.showReceipt = false;
+      this.placedOrder = null;
+    }
+  }
+  // Helper method to empty cart
+  private emptyCart() {
+    const items = this.cartItems();
+    items.forEach(item => {
+      this.cartService.updateQuantity(item.id, 0);
+    });
   }
 }
